@@ -5,13 +5,14 @@ CREATE TABLE users(
 	user_age INTEGER); 
 
 CREATE TABLE tweet(
-	user_id INTEGER, 
+	user_id INTEGER NOT NULL, 
 	tweet TEXT, 
 	timestamp DATETIME DEFAULT CURRENT_TIMESTAMP);
 
 CREATE TABLE following(
-	follower_user_id INTEGER, 
-	followee_user_id INTEGER);
+	follower_id INTEGER NOT NULL, 
+	followed_id INTEGER NOT NULL
+	);
 
 INSERT INTO users VALUES (1, "tony_iommi", "tennessee", 25);
 INSERT INTO users (user_name, user_location, user_age) VALUES ("ella_fitzgerald", "california", 19);
@@ -30,9 +31,9 @@ INSERT INTO tweet (user_id, tweet)VALUES ( 2, "Hi I'm ELLA and I play country mu
 INSERT INTO tweet (user_id, tweet)VALUES ( 3, "checkout  my new app on appstore");
 INSERT INTO tweet (user_id, tweet)VALUES ( 4, "so I ate an apple today");
 INSERT INTO tweet (user_id, tweet)VALUES ( 5, "starting a new fitness goal");
-INSERT INTO tweet (user_id, tweet)VALUES ( 6, "justin bieber is back with selena");
-INSERT INTO tweet (user_id, tweet)VALUES ( 7, "I'm a Belieber");
-INSERT INTO tweet (user_id, tweet)VALUES ( 5, "Katy Perry concert tickets selling out fast!");
+INSERT INTO tweet (user_id, tweet, timestamp)VALUES ( 6, "justin bieber is back with selena","2019-03-23 20:11:14");
+INSERT INTO tweet (user_id, tweet, timestamp)VALUES ( 7, "I'm a Belieber","2019-03-24 20:11:14");
+INSERT INTO tweet (user_id, tweet, timestamp)VALUES ( 5, "Katy Perry concert tickets selling out fast!","2019-03-25 20:11:14" );
 
 INSERT INTO following VALUES (1,2);
 INSERT INTO following VALUES (2,1);
@@ -40,7 +41,18 @@ INSERT INTO following VALUES (3,5);
 INSERT INTO following VALUES (4,3);
 INSERT INTO following VALUES (5,6);
 INSERT INTO following VALUES (6,7);
+INSERT INTO following VALUES (2,7);
+INSERT INTO following VALUES (3,7);
+INSERT INTO following VALUES (5,7);
+INSERT INTO following VALUES (4,7);
+INSERT INTO following VALUES (1,7);
 
+SELECT users.user_id, users.user_name, following.followed_id, second_user.user_name FROM following JOIN users ON  following.follower_id = users.user_id
+join
+users as second_user
+on second_user.user_id = following.followed_id;
 
-SELECT * FROM users JOIN tweet ON users.user_id = tweet.user_id;
-SELECT * FROM users JOIN following ON users.user_id = following.follower_user_id AND users.user_id = following.followee_user_id;
+SELECT COUNT (*) AS tweet_count, users.user_name FROM tweet JOIN users ON tweet.user_id = users.user_id GROUP BY users.user_name ORDER BY tweet_count DESC ;
+
+SELECT tweet FROM tweet ORDER BY timestamp DESC LIMIT 5;
+SELECT * FROM tweet ORDER BY timestamp DESC LIMIT 5;
